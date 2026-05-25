@@ -7,9 +7,9 @@ Status: Proof-of-concept — extraction script and an example notebook are avail
 ## Key files
 - [scripts/extract_questions_from_pdf.py](scripts/extract_questions_from_pdf.py) — PDF extraction script (uses `pdfminer.six` and `pandas`).
 - [notebooks/question_extraction.ipynb](notebooks/question_extraction.ipynb) — runnable notebook that reproduces the pipeline.
-- [data/training_dataset.csv](data/training_dataset.csv) — aggregated questions (output from the script).
-- [data/topics_summary.csv](data/topics_summary.csv) — per-topic counts and statistics.
-- [data/training_template.csv](data/training_template.csv) — CSV header template for guidance.
+ - [data/training-dataset.csv](data/training-dataset.csv) — aggregated questions (output from the script).
+ - [data/topics-summary.csv](data/topics-summary.csv) — per-topic counts and statistics.
+ - [data/training-template.csv](data/training-template.csv) — CSV header template for guidance.
 
 ## Purpose
 - Extract questions and headings from PDF exam papers.
@@ -27,7 +27,7 @@ python -m pip install --user pdfminer.six pandas tqdm
 2. Run the extraction script on a PDF (example):
 
 ```powershell
-python scripts/extract_questions_from_pdf.py "CSE 3rd year.pdf" --out data/training_dataset.csv
+python scripts/extract_questions_from_pdf.py "CSE-3rd-year.pdf" --out data/training-dataset.csv
 ```
 
 3. Open the notebook to reproduce and inspect results:
@@ -86,3 +86,45 @@ If you want, I can now:
 - prepare a ready-to-run PR branch and push it to Pawan's repo if you provide the remote URL and credentials.
 
 Contact: add collaborators or mention `@pawan` in the PR description when opening the PR.
+
+## Additional setup: merging PDFs, per-year datasets, and VS Code extensions
+
+1. Install Python dependencies:
+
+```powershell
+python -m pip install --user -r requirements.txt
+```
+
+2. To merge PDFs by year (combine subjects for each year into one PDF):
+
+```powershell
+python scripts/merge_pdfs_by_year.py
+# Merged files will be created under the merged-pdfs/ folder
+```
+
+3. To extract questions from all PDFs and produce a per-year dataset (preserves per-year counts):
+
+```powershell
+python scripts/extract_questions_from_pdf.py . --out "data/training-dataset.csv"
+```
+
+4. Recommended VS Code extensions for working with this project:
+
+- `ms-python.python` — Python language support and debugger.
+- `ms-toolsai.jupyter` — Jupyter notebook support inside VS Code.
+- `ms-python.vscode-pylance` — Fast Python language server (type checking/intellisense).
+- `eamodio.gitlens` — Git enhancements (optional but helpful).
+
+Install extensions from the command line (if `code` is on PATH):
+
+```bash
+code --install-extension ms-python.python
+code --install-extension ms-toolsai.jupyter
+code --install-extension ms-python.vscode-pylance
+code --install-extension eamodio.gitlens
+```
+
+## Notes
+
+- The extraction pipeline now writes a `year` column and groups occurrence counts per-year so questions from different years are not merged together. The default output filename is `data/training-dataset.csv` (human-friendly, no underscores).
+- If you want me to also rename notebook and script filenames to remove underscores, tell me and I'll update code references accordingly.
